@@ -12,6 +12,10 @@ type Mutation {
     deletePost(id: ID!): Post!
 }
 
+type Subscription {
+    post: Post!
+}
+
 input CreateUserInput {
     name: String!
     phoneNumber: String!
