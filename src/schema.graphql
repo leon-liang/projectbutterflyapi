@@ -68,7 +68,13 @@ type Post {
     author: User!
 }
 
+enum MutationType {
+    CREATED
+    UPDATED
+    DELETED
+}
+
 type PostSubscriptionPayload {
-    mutation: String!
+    mutation: MutationType!
     data: Post!
 }
