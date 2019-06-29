@@ -104,6 +104,11 @@ const Mutation = {
         if (args.data.reserved === true && !args.data.reservedBy) {
             throw new Error("Please specify the client");
         }
+
+        if (args.data.reserved === true && post.reserved === true) {
+            throw new Error("Meal already taken.")
+        }
+
         if (args.data.reserved === true) {
             post.reserved = true;
             post.reservedBy = args.data.reservedBy;
