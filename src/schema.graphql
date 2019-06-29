@@ -13,7 +13,7 @@ type Mutation {
 }
 
 type Subscription {
-    post: Post!
+    post: PostSubscriptionPayload!
 }
 
 input CreateUserInput {
@@ -31,6 +31,8 @@ input CreatePostInput {
     description: String!
     portions: Int!
     timeStamp: Int!
+    reserved: Boolean!
+    reservedBy: ID
     author: ID!
     lat: Float!
     lon: Float!
@@ -41,6 +43,8 @@ input UpdatePostInput {
     title: String
     description: String
     portions: Int
+    reserved: Boolean
+    reservedBy: ID
 }
 
 type User {
@@ -57,7 +61,14 @@ type Post {
     description: String!
     portions: Int!
     timeStamp: Int!
+    reserved: Boolean!
+    reservedBy: User
     lat: Float!
     lon: Float!
     author: User!
+}
+
+type PostSubscriptionPayload {
+    mutation: String!
+    data: Post!
 }

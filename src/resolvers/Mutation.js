@@ -62,12 +62,21 @@ const Mutation = {
             return user.id === args.data.author;
         });
 
-        if(!userExists) {
+        if (!userExists) {
             throw new Error("User not found.")
+        }
+
+        if (args.data.reserved === false) {
+            args.data.reservedBy = null;
+        }
+
+        if (args.data.reserved === true && !args.data.reservedBy) {
+            throw new Error("Please specify the client");
         }
 
         const post = {
             id: uuidv4(),
+            reserved: false,
             ...args.data
         };
         db.posts.push(post);
@@ -91,6 +100,16 @@ const Mutation = {
         }
         if (typeof args.data.portions === "number")  {
             post.portions = args.data.portions;
+        }
+        if (args.data.reserved === true && !args.data.reservedBy) {
+            throw new Error("Please specify the client");
+        }
+        if (args.data.reserved === true) {
+            post.reserved = true;
+            post.reservedBy = args.data.reservedBy;
+        } else if (args.data.reserved === false) {
+            post.reserved = false;
+            post.reservedBy = null;
         }
 
         return post;
