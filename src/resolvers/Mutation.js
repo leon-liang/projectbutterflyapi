@@ -81,11 +81,16 @@ const Mutation = {
         };
         db.posts.push(post);
 
-        pubSub.publish('post', {post});
+        pubSub.publish('post', {
+            post: {
+                mutation: "CREATED",
+                data: post
+            }
+        });
 
         return post;
     },
-    updatePost(parent, args, { db }, info) {
+    updatePost(parent, args, { db, pubSub }, info) {
         const post = db.posts.find((post) => {
             return post.id === args.id;
         });
@@ -117,20 +122,35 @@ const Mutation = {
             post.reservedBy = null;
         }
 
+        pubSub.publish('post', {
+            post: {
+                mutation: "UPDATED",
+                data: post
+            }
+        });
+
         return post;
     },
-    deletePost(parent, args, { db }, info) {
+    deletePost(parent, args, { db, pubSub }, info) {
         const postIndex = db.posts.findIndex((post) => {
             return post.id === args.id;
         });
         if (postIndex === -1) {
             throw new Error("Post not found.")
         }
-        const deletedPosts = db.posts.splice(postIndex, 1);
+        const [post] = db.posts.splice(postIndex, 1);
         db.posts = db.posts.filter((post) => {
             return post.id !== args.id;
         });
-        return deletedPosts[0];
+
+        pubSub.publish('post', {
+            post: {
+                mutation: "DELETED",
+                data: post
+            }
+        });
+
+        return post;
     }
 };
 
